@@ -125,13 +125,30 @@ class TestAccountService(TestCase):
 
     # ADD YOUR TEST CASES HERE ...
     def test_read_an_account(self):
+        """It should Read an Account"""
         account = self._create_accounts(1)[0]
         response = self.client.get(f"{BASE_URL}/{account.id}")
         res_data = response.get_json()
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(res_data.name, account.name)
-        self.assertEqual(res_data.email, account.email)
-        self.assertEqual(res_data.address, account.address)
-        self.assertEqual(res_data.phone_number, account.phone_number)
-        self.assertEqual(res_data.date_joined, account.date_joined)
+        self.assertEqual(res_data["name"], account.name)
+        self.assertEqual(res_data["email"], account.email)
+        self.assertEqual(res_data["address"], account.address)
+        self.assertEqual(res_data["phone_number"], account.phone_number)
+        self.assertEqual(res_data["date_joined"], str(account.date_joined))
+
+    def test_account_not_found(self):
+        """It should not Read an Account that is not found"""
+        invalid_id = 0
+        response = self.client.get(f"{BASE_URL}/{invalid_id}")  
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    # def test_list_all_accounts(self):
+    #     """It should List all Accounts"""
+    #     accounts = self._create_accounts(3)
+    #     response = self.client.get(f"{BASE_URL}")
+    #     res_data = response.get_json()
+
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(accounts.count(), len(res_data))
+            
